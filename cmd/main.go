@@ -12,7 +12,23 @@ func main() {
 
 	tc := converter.NewTemperatureConverter()
 
-	//fmt.Println(tc.Convert(*t, temperature.Kelvin))
+	tc.Converters[NewUnit] = &NewUnitConverter{}
 
-	fmt.Println(tc.Convert(*t, temperature.Fahrenheit))
+	temp, _ := tc.Convert(*t, NewUnit)
+	fmt.Println(temp)
+}
+
+const (
+	NewUnit = "Y"
+)
+
+type NewUnitConverter struct {
+}
+
+func (*NewUnitConverter) ToKelvin(t temperature.Temperature) *temperature.Temperature {
+	return temperature.NewTemperature(t.Value+200, temperature.Kelvin)
+}
+
+func (*NewUnitConverter) FromKelvin(t temperature.Temperature) *temperature.Temperature {
+	return temperature.NewTemperature(t.Value-200, NewUnit)
 }
