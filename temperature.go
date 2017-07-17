@@ -3,16 +3,22 @@ package temperature
 
 import (
 	"fmt"
+	"math"
 )
 
 //Unit represent a temperature unit.
-type Unit string
+type Unit struct {
+	Name    string
+	Symbole string
+}
 
 //Enum for Unit.
-const (
-	Kelvin     Unit = "K"
-	Celsius         = "C"
-	Fahrenheit      = "F"
+var (
+	Kelvin     = Unit{"Kelvin", `K`}
+	Celsius    = Unit{"Celsius", `C`}
+	Fahrenheit = Unit{"Fahrenheit", `F`}
+	Rankine    = Unit{"Rankine", `R`}
+	Delisle    = Unit{"Delisle", `D`}
 )
 
 //Temperature represent a temperature with a Value and a Unit.
@@ -28,9 +34,14 @@ func NewTemperature(value float64, unit Unit) *Temperature {
 }
 
 func (t *Temperature) String() string {
-	return fmt.Sprintf("%.2f° %s", round(t.Value, 0.05), t.Unit)
+	return fmt.Sprintf("%.2f°%s", ToFixed(t.Value, 2), t.Unit.Symbole)
 }
 
-func round(x, unit float64) float64 {
-	return float64(int64(x/unit+0.5)) * unit
+func round(num float64) int {
+	return int(num + math.Copysign(0.5, num))
+}
+
+func ToFixed(num float64, precision int) float64 {
+	output := math.Pow(10, float64(precision))
+	return float64(round(num*output)) / output
 }

@@ -18,9 +18,7 @@ func main() {
 	fmt.Println(temp)
 }
 
-const (
-	NewUnit = "Y"
-)
+var NewUnit = temperature.Unit{"NewUnit", `Y`}
 
 type NewUnitConverter struct {
 }
