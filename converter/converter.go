@@ -2,7 +2,7 @@
 package converter
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/yanndr/temperature"
 )
@@ -40,7 +40,7 @@ func (tc *TemperatureConverter) Convert(t temperature.Temperature, u temperature
 		tempInKelvin = &t
 	} else {
 		if tc.Converters[t.Unit] == nil {
-			return nil, errors.New("no converter found")
+			return nil, fmt.Errorf("no converter found for unit %s", t.Unit.Name)
 		}
 
 		tempInKelvin = tc.Converters[t.Unit].ToKelvin(t)
@@ -51,7 +51,7 @@ func (tc *TemperatureConverter) Convert(t temperature.Temperature, u temperature
 	}
 
 	if tc.Converters[u] == nil {
-		return nil, errors.New("no converter found")
+		return nil, fmt.Errorf("no converter found for unit %s", u.Name)
 	}
 
 	return tc.Converters[u].FromKelvin(*tempInKelvin), nil
@@ -89,7 +89,7 @@ type rankineKelvinConverter struct {
 }
 
 func (*rankineKelvinConverter) FromKelvin(t temperature.Temperature) *temperature.Temperature {
-	return temperature.NewTemperature(t.Value*9/5, temperature.Fahrenheit)
+	return temperature.NewTemperature(t.Value*9/5, temperature.Rankine)
 }
 
 func (*rankineKelvinConverter) ToKelvin(t temperature.Temperature) *temperature.Temperature {
@@ -100,7 +100,7 @@ type delisleKelvinConverter struct {
 }
 
 func (*delisleKelvinConverter) FromKelvin(t temperature.Temperature) *temperature.Temperature {
-	return temperature.NewTemperature((373.15-t.Value)*3/2, temperature.Fahrenheit)
+	return temperature.NewTemperature((373.15-t.Value)*3/2, temperature.Delisle)
 }
 
 func (*delisleKelvinConverter) ToKelvin(t temperature.Temperature) *temperature.Temperature {

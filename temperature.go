@@ -8,11 +8,11 @@ import (
 
 //Unit represent a temperature unit.
 type Unit struct {
-	Name    string
-	Symbole string
+	Name   string
+	Symbol string
 }
 
-//Enum for Unit.
+//Predefined Unit.
 var (
 	Kelvin     = Unit{"Kelvin", `K`}
 	Celsius    = Unit{"Celsius", `C`}
@@ -34,7 +34,7 @@ func NewTemperature(value float64, unit Unit) *Temperature {
 }
 
 func (t *Temperature) String() string {
-	return fmt.Sprintf("%.2f°%s", ToFixed(t.Value, 2), t.Unit.Symbole)
+	return fmt.Sprintf("%.2f°%s", ToFixed(t.Value, 2), t.Unit.Symbol)
 }
 
 func round(num float64) int {
