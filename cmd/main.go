@@ -16,6 +16,11 @@ func main() {
 
 	temp, _ := tc.Convert(*t, NewUnit)
 	fmt.Println(temp)
+
+	t = temperature.NewTemperature(25.3, NewUnit)
+
+	temp, _ = tc.Convert(*t, temperature.Fahrenheit)
+	fmt.Println(temp)
 }
 
 var NewUnit = temperature.Unit{"NewUnit", `Y`}
