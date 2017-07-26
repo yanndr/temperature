@@ -23,10 +23,10 @@ var NewUnit = temperature.Unit{"NewUnit", `Y`}
 type NewUnitConverter struct {
 }
 
-func (*NewUnitConverter) ToKelvin(t temperature.Temperature) *temperature.Temperature {
-	return temperature.NewTemperature(t.Value+200, temperature.Kelvin)
+func (*NewUnitConverter) ToKelvin(t float64) float64 {
+	return t + 200
 }
 
-func (*NewUnitConverter) FromKelvin(t temperature.Temperature) *temperature.Temperature {
-	return temperature.NewTemperature(t.Value-200, NewUnit)
+func (*NewUnitConverter) FromKelvin(t float64) float64 {
+	return t - 200
 }

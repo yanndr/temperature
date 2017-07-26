@@ -34,14 +34,12 @@ func NewTemperature(value float64, unit Unit) *Temperature {
 }
 
 func (t *Temperature) String() string {
-	return fmt.Sprintf("%.2f°%s", ToFixed(t.Value, 2), t.Unit.Symbol)
+	return fmt.Sprintf("%.2f°%s", Round(t.Value, 2), t.Unit.Symbol)
 }
 
-func round(num float64) int {
-	return int(num + math.Copysign(0.5, num))
-}
-
-func ToFixed(num float64, precision int) float64 {
+//Round returns a round number of a float64.
+func Round(num float64, precision int) float64 {
 	output := math.Pow(10, float64(precision))
-	return float64(round(num*output)) / output
+	val := int(num*output + math.Copysign(0.5, num))
+	return float64(val) / output
 }
