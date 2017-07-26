@@ -27,6 +27,7 @@ func NewTemperatureConverter() *TemperatureConverter {
 	tc.Converters[temperature.Fahrenheit] = &fahrenheitKelvinConverter{}
 	tc.Converters[temperature.Rankine] = &rankineKelvinConverter{}
 	tc.Converters[temperature.Delisle] = &delisleKelvinConverter{}
+	tc.Converters[temperature.Reaumur] = &reaumurKelvinConverter{}
 	return tc
 }
 

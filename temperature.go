@@ -19,6 +19,7 @@ var (
 	Fahrenheit = Unit{"Fahrenheit", `F`}
 	Rankine    = Unit{"Rankine", `R`}
 	Delisle    = Unit{"Delisle", `D`}
+	Reaumur    = Unit{"Reaumur", "Re"}
 )
 
 //Temperature represent a temperature with a Value and a Unit.

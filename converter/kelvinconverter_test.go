@@ -161,3 +161,41 @@ func TestKelvinToDelisleConverter(t *testing.T) {
 		})
 	}
 }
+
+func TestReaumurToKelvinConverter(t *testing.T) {
+
+	tt := []tempTestCase{
+		{name: "zero Reaumur to Kelvin", temp: 0.0, value: 273.15},
+		{name: "thirty five Reaumur to Kelvin", temp: 35.0, value: 316.9},
+	}
+	c := reaumurKelvinConverter{}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			res := c.ToKelvin(tc.temp)
+			val := temperature.Round(res, 2)
+			if val != tc.value {
+				t.Fatalf("Expected %v; got %v", tc.value, val)
+			}
+		})
+	}
+}
+
+func TestKelvinToReamurConverter(t *testing.T) {
+
+	tt := []tempTestCase{
+		{name: "zero Kelvin to Reaumur", temp: 0.0, value: -218.52},
+		{name: "fifty five Kelvin to Reaumur", temp: 55.0, value: -174.52},
+	}
+	c := reaumurKelvinConverter{}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			res := c.FromKelvin(tc.temp)
+			val := temperature.Round(res, 2)
+			if val != tc.value {
+				t.Fatalf("Expected %v; got %v", tc.value, val)
+			}
+		})
+	}
+}

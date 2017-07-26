@@ -51,3 +51,14 @@ func (*delisleKelvinConverter) FromKelvin(t float64) float64 {
 func (*delisleKelvinConverter) ToKelvin(t float64) float64 {
 	return 373.15 - t*2/3
 }
+
+type reaumurKelvinConverter struct {
+}
+
+func (*reaumurKelvinConverter) FromKelvin(t float64) float64 {
+	return (t - 273.15) * 4 / 5
+}
+
+func (*reaumurKelvinConverter) ToKelvin(t float64) float64 {
+	return t*5/4 + 273.15
+}
