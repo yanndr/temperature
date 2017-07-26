@@ -66,7 +66,7 @@ func (tc *TemperatureConverter) Convert(t temperature.Temperature, u temperature
 	}
 
 	if tc.Converters[u] == nil {
-		return nil, &noConverterFoundError{t.Unit.Name}
+		return nil, &noConverterFoundError{u.Name}
 	}
 
 	return &temperature.Temperature{Value: tc.Converters[u].FromKelvin(tempInKelvin), Unit: u}, nil
