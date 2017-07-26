@@ -3,120 +3,184 @@ package converter
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/yanndr/temperature"
 )
 
-func TestCeslsuisToKelvinConverter(t *testing.T) {
+type tempTestCase struct {
+	name  string
+	temp  temperature.Temperature
+	value float64
+}
+
+func TestCelsuisToKelvinConverter(t *testing.T) {
+
+	tt := []tempTestCase{
+		{name: "zero celsius to kelvin", temp: temperature.Temperature{Value: 0.0, Unit: temperature.Celsius}, value: 273.15},
+		{name: "thirty five celsius to kelvin", temp: temperature.Temperature{Value: 35.0, Unit: temperature.Celsius}, value: 308.15},
+	}
 	c := &celsiusKelvinConverter{}
 
-	temp := temperature.Temperature{Value: 0.0, Unit: temperature.Celsius}
-	result := c.ToKelvin(temp)
-	excpecteResult := 273.15
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			res := c.ToKelvin(tc.temp)
+			if res.Value != tc.value {
+				t.Fatalf("Expected %v; got %v", tc.value, res.Value)
+			}
+			if res.Unit != temperature.Kelvin {
+				t.Fatalf("Expected Kelvin; got %v", res.Unit)
+			}
+		})
+	}
+}
 
-	assert.Equal(t, excpecteResult, result.Value)
-	assert.Equal(t, temperature.Kelvin, result.Unit)
+func TestKelvinToCelsiusConverter(t *testing.T) {
 
-	temp = temperature.Temperature{Value: 35.0, Unit: temperature.Celsius}
-	result = c.ToKelvin(temp)
-	excpecteResult = 308.15
+	tt := []tempTestCase{
+		{name: "zero kelvin to celsius", temp: temperature.Temperature{Value: 0.0, Unit: temperature.Kelvin}, value: -273.15},
+	}
+	c := &celsiusKelvinConverter{}
 
-	assert.Equal(t, excpecteResult, result.Value)
-	assert.Equal(t, temperature.Kelvin, result.Unit)
-
-	temp = temperature.Temperature{Value: 0, Unit: temperature.Kelvin}
-	result = c.FromKelvin(temp)
-	excpecteResult = -273.15
-
-	assert.Equal(t, excpecteResult, result.Value)
-	assert.Equal(t, temperature.Celsius, result.Unit)
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			res := c.FromKelvin(tc.temp)
+			if res.Value != tc.value {
+				t.Fatalf("Expected %v; got %v", tc.value, res.Value)
+			}
+			if res.Unit != temperature.Celsius {
+				t.Fatalf("Expected Celsius; got %v", res.Unit)
+			}
+		})
+	}
 }
 
 func TestFahrenheitToKelvinConverter(t *testing.T) {
+
+	tt := []tempTestCase{
+		{name: "zero fahrenheit to kelvin", temp: temperature.Temperature{Value: 0.0, Unit: temperature.Fahrenheit}, value: 255.37},
+		{name: "thirty five fahrenheit to kelvin", temp: temperature.Temperature{Value: 35.0, Unit: temperature.Fahrenheit}, value: 274.82},
+	}
 	c := &fahrenheitKelvinConverter{}
 
-	temp := temperature.Temperature{Value: 0.0, Unit: temperature.Fahrenheit}
-	result := c.ToKelvin(temp)
-	excpecteResult := 255.37
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			res := c.ToKelvin(tc.temp)
+			val := temperature.ToFixed(res.Value, 2)
+			if val != tc.value {
+				t.Fatalf("Expected %v; got %v", tc.value, val)
+			}
+			if res.Unit != temperature.Kelvin {
+				t.Fatalf("Expected Kelvin; got %v", res.Unit)
+			}
+		})
+	}
+}
 
-	assert.Equal(t, excpecteResult, temperature.ToFixed(result.Value, 2))
-	assert.Equal(t, temperature.Kelvin, result.Unit)
+func TestKelvinToFahrenheitConverter(t *testing.T) {
 
-	temp = temperature.Temperature{Value: 35.0, Unit: temperature.Fahrenheit}
-	result = c.ToKelvin(temp)
-	excpecteResult = 274.82
+	tt := []tempTestCase{
+		{name: "zero kelvin to fahrenheit", temp: temperature.Temperature{Value: 0.0, Unit: temperature.Fahrenheit}, value: -459.67},
+		{name: "thirty five kelvin to fahrenheit", temp: temperature.Temperature{Value: 35.0, Unit: temperature.Fahrenheit}, value: -396.67},
+	}
+	c := &fahrenheitKelvinConverter{}
 
-	assert.Equal(t, excpecteResult, temperature.ToFixed(result.Value, 2))
-	assert.Equal(t, temperature.Kelvin, result.Unit)
-
-	temp = temperature.Temperature{Value: 0, Unit: temperature.Kelvin}
-	result = c.FromKelvin(temp)
-	excpecteResult = -459.67
-
-	assert.Equal(t, excpecteResult, result.Value)
-	assert.Equal(t, temperature.Fahrenheit, result.Unit)
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			res := c.FromKelvin(tc.temp)
+			val := temperature.ToFixed(res.Value, 2)
+			if val != tc.value {
+				t.Fatalf("Expected %v; got %v", tc.value, val)
+			}
+			if res.Unit != temperature.Fahrenheit {
+				t.Fatalf("Expected Fahrenheit; got %v", res.Unit)
+			}
+		})
+	}
 }
 
 func TestRankineToKelvinConverter(t *testing.T) {
-	c := &rankineKelvinConverter{}
 
-	temp := temperature.Temperature{Value: 0.0, Unit: temperature.Rankine}
-	result := c.ToKelvin(temp)
-	excpecteResult := 0.0
+	tt := []tempTestCase{
+		{name: "zero Rankine to Kelvin", temp: temperature.Temperature{Value: 0.0, Unit: temperature.Fahrenheit}, value: 0.0},
+		{name: "thirty five Rankine to Kelvin", temp: temperature.Temperature{Value: 35.0, Unit: temperature.Fahrenheit}, value: 19.44},
+	}
+	c := rankineKelvinConverter{}
 
-	assert.Equal(t, excpecteResult, temperature.ToFixed(result.Value, 2))
-	assert.Equal(t, temperature.Kelvin, result.Unit)
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			res := c.ToKelvin(tc.temp)
+			val := temperature.ToFixed(res.Value, 2)
+			if val != tc.value {
+				t.Fatalf("Expected %v; got %v", tc.value, val)
+			}
+			if res.Unit != temperature.Kelvin {
+				t.Fatalf("Expected Kelvin; got %v", res.Unit)
+			}
+		})
+	}
+}
 
-	temp = temperature.Temperature{Value: 35.0, Unit: temperature.Rankine}
-	result = c.ToKelvin(temp)
-	excpecteResult = 19.44
+func TestKelvinToRankineConverter(t *testing.T) {
 
-	assert.Equal(t, excpecteResult, temperature.ToFixed(result.Value, 2))
-	assert.Equal(t, temperature.Kelvin, result.Unit)
+	tt := []tempTestCase{
+		{name: "zero Kelvin to Rankine", temp: temperature.Temperature{Value: 0.0, Unit: temperature.Kelvin}, value: 0.0},
+		{name: "fifty five Kelvin to Rankine", temp: temperature.Temperature{Value: 55.0, Unit: temperature.Kelvin}, value: 99},
+	}
+	c := rankineKelvinConverter{}
 
-	temp = temperature.Temperature{Value: 0, Unit: temperature.Kelvin}
-	result = c.FromKelvin(temp)
-	excpecteResult = 0
-
-	assert.Equal(t, excpecteResult, result.Value)
-	assert.Equal(t, temperature.Rankine, result.Unit)
-
-	temp = temperature.Temperature{Value: 55, Unit: temperature.Kelvin}
-	result = c.FromKelvin(temp)
-	excpecteResult = 99
-
-	assert.Equal(t, excpecteResult, result.Value)
-	assert.Equal(t, temperature.Rankine, result.Unit)
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			res := c.FromKelvin(tc.temp)
+			val := temperature.ToFixed(res.Value, 2)
+			if val != tc.value {
+				t.Fatalf("Expected %v; got %v", tc.value, val)
+			}
+			if res.Unit != temperature.Rankine {
+				t.Fatalf("Expected Rankine; got %v", res.Unit)
+			}
+		})
+	}
 }
 
 func TestDelisleToKelvinConverter(t *testing.T) {
-	c := &delisleKelvinConverter{}
 
-	temp := temperature.Temperature{Value: 0.0, Unit: temperature.Delisle}
-	result := c.ToKelvin(temp)
-	excpecteResult := 373.15
+	tt := []tempTestCase{
+		{name: "zero Delisle to Kelvin", temp: temperature.Temperature{Value: 0.0, Unit: temperature.Delisle}, value: 373.15},
+		{name: "thirty five Delisle to Kelvin", temp: temperature.Temperature{Value: 35.0, Unit: temperature.Delisle}, value: 349.82},
+	}
+	c := delisleKelvinConverter{}
 
-	assert.Equal(t, excpecteResult, temperature.ToFixed(result.Value, 2))
-	assert.Equal(t, temperature.Kelvin, result.Unit)
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			res := c.ToKelvin(tc.temp)
+			val := temperature.ToFixed(res.Value, 2)
+			if val != tc.value {
+				t.Fatalf("Expected %v; got %v", tc.value, val)
+			}
+			if res.Unit != temperature.Kelvin {
+				t.Fatalf("Expected Kelvin; got %v", res.Unit)
+			}
+		})
+	}
+}
 
-	temp = temperature.Temperature{Value: 35.0, Unit: temperature.Delisle}
-	result = c.ToKelvin(temp)
-	excpecteResult = 349.82
+func TestKelvinToDelisleConverter(t *testing.T) {
 
-	assert.Equal(t, excpecteResult, temperature.ToFixed(result.Value, 2))
-	assert.Equal(t, temperature.Kelvin, result.Unit)
+	tt := []tempTestCase{
+		{name: "zero Kelvin to Delisle", temp: temperature.Temperature{Value: 0.0, Unit: temperature.Kelvin}, value: 559.72},
+		{name: "fifty five Kelvin to Delisle", temp: temperature.Temperature{Value: 55.0, Unit: temperature.Kelvin}, value: 477.23},
+	}
+	c := delisleKelvinConverter{}
 
-	temp = temperature.Temperature{Value: 0, Unit: temperature.Kelvin}
-	result = c.FromKelvin(temp)
-	excpecteResult = 559.72
-
-	assert.Equal(t, excpecteResult, temperature.ToFixed(result.Value, 2))
-	assert.Equal(t, temperature.Delisle, result.Unit)
-
-	temp = temperature.Temperature{Value: 55, Unit: temperature.Kelvin}
-	result = c.FromKelvin(temp)
-	excpecteResult = 477.23
-
-	assert.Equal(t, excpecteResult, temperature.ToFixed(result.Value, 2))
-	assert.Equal(t, temperature.Delisle, result.Unit)
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			res := c.FromKelvin(tc.temp)
+			val := temperature.ToFixed(res.Value, 2)
+			if val != tc.value {
+				t.Fatalf("Expected %v; got %v", tc.value, val)
+			}
+			if res.Unit != temperature.Delisle {
+				t.Fatalf("Expected Delisle; got %v", res.Unit)
+			}
+		})
+	}
 }
