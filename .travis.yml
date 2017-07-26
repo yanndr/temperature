@@ -3,5 +3,5 @@ language: go
 go:
   - master
 script:
-  -go test ./...
-  -go build 
+  - go test ./...
+  - go build 
