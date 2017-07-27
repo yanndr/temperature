@@ -8,13 +8,16 @@ import (
 
 func main() {
 	c := temperature.NewCelsius(0)
-	k := temperature.NewKelvin(366)
+	k := temperature.Kelvin{}
+	f := temperature.Fahrenheit{}
 	n := newUnit{}
 
 	temperature.Convert(c, &n)
 	temperature.Convert(c, &k)
+	temperature.Convert(k, &f)
 	fmt.Println(c)
 	fmt.Println(k)
+	fmt.Println(f)
 	fmt.Println(n)
 }
 
