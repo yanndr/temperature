@@ -2,6 +2,7 @@
 package temperature
 
 import (
+	"errors"
 	"math"
 )
 
@@ -30,6 +31,9 @@ type (
 	Celsius    struct{ Temperature }
 	Kelvin     struct{ Temperature }
 	Fahrenheit struct{ Temperature }
+	Rankine    struct{ Temperature }
+	Delisle    struct{ Temperature }
+	Reaumur    struct{ Temperature }
 )
 
 func NewCelsius(value float64) Celsius {
@@ -50,6 +54,24 @@ func NewFahrenheit(value float64) Fahrenheit {
 	}
 }
 
+func NewRankine(value float64) Rankine {
+	return Rankine{
+		Temperature: Temperature{Value: value},
+	}
+}
+
+func NewDelisle(value float64) Delisle {
+	return Delisle{
+		Temperature: Temperature{Value: value},
+	}
+}
+
+func NewReaumur(value float64) Reaumur {
+	return Reaumur{
+		Temperature: Temperature{Value: value},
+	}
+}
+
 //Round returns a round number of a float64.
 func Round(num float64, precision int) float64 {
 	output := math.Pow(10, float64(precision))
@@ -57,7 +79,19 @@ func Round(num float64, precision int) float64 {
 	return float64(val) / output
 }
 
+var ErrNilOutputTemperature = errors.New("Output temperature can't be nil")
+var ErrNilInputTemperature = errors.New("Input temperature can't be nil")
+
 // Convert a temperature to different unit. It updated the output temperature value.
-func Convert(input ToKelvinConvertible, output FromKelvinConvertible) {
+func Convert(input ToKelvinConvertible, output FromKelvinConvertible) error {
+	if output == nil {
+		return ErrNilOutputTemperature
+	}
+
+	if input == nil {
+		return ErrNilInputTemperature
+	}
+
 	output.FromKelvin(input.ToKelvin())
+	return nil
 }
