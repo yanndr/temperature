@@ -1,9 +1,7 @@
-package converter
+package temperature
 
 import (
 	"testing"
-
-	"github.com/yanndr/temperature"
 )
 
 type tempTestCase struct {
@@ -58,7 +56,7 @@ func TestFahrenheitToKelvinConverter(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			res := c.ToKelvin(tc.temp)
-			val := temperature.Round(res, 2)
+			val := Round(res, 2)
 			if val != tc.value {
 				t.Fatalf("Expected %v; got %v", tc.value, val)
 			}
@@ -77,7 +75,7 @@ func TestKelvinToFahrenheitConverter(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			res := c.FromKelvin(tc.temp)
-			val := temperature.Round(res, 2)
+			val := Round(res, 2)
 			if val != tc.value {
 				t.Fatalf("Expected %v; got %v", tc.value, val)
 			}
@@ -96,7 +94,7 @@ func TestRankineToKelvinConverter(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			res := c.ToKelvin(tc.temp)
-			val := temperature.Round(res, 2)
+			val := Round(res, 2)
 			if val != tc.value {
 				t.Fatalf("Expected %v; got %v", tc.value, val)
 			}
@@ -115,7 +113,7 @@ func TestKelvinToRankineConverter(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			res := c.FromKelvin(tc.temp)
-			val := temperature.Round(res, 2)
+			val := Round(res, 2)
 			if val != tc.value {
 				t.Fatalf("Expected %v; got %v", tc.value, val)
 			}
@@ -135,7 +133,7 @@ func TestDelisleToKelvinConverter(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			res := c.ToKelvin(tc.temp)
-			val := temperature.Round(res, 2)
+			val := Round(res, 2)
 			if val != tc.value {
 				t.Fatalf("Expected %v; got %v", tc.value, val)
 			}
@@ -154,7 +152,7 @@ func TestKelvinToDelisleConverter(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			res := c.FromKelvin(tc.temp)
-			val := temperature.Round(res, 2)
+			val := Round(res, 2)
 			if val != tc.value {
 				t.Fatalf("Expected %v; got %v", tc.value, val)
 			}
@@ -173,7 +171,7 @@ func TestReaumurToKelvinConverter(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			res := c.ToKelvin(tc.temp)
-			val := temperature.Round(res, 2)
+			val := Round(res, 2)
 			if val != tc.value {
 				t.Fatalf("Expected %v; got %v", tc.value, val)
 			}
@@ -192,7 +190,7 @@ func TestKelvinToReamurConverter(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			res := c.FromKelvin(tc.temp)
-			val := temperature.Round(res, 2)
+			val := Round(res, 2)
 			if val != tc.value {
 				t.Fatalf("Expected %v; got %v", tc.value, val)
 			}

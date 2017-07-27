@@ -1,4 +1,4 @@
-//Package temperature provides Temperature struct to deal with different temperature unit.
+//Package temperature provides Temperature struct to deal with different temperature scale.
 package temperature
 
 import (
@@ -6,36 +6,36 @@ import (
 	"math"
 )
 
-//Unit represent a temperature unit.
-type Unit struct {
+//Scale represent a temperature scale.
+type Scale struct {
 	Name   string
 	Symbol string
 }
 
-//Predefined Unit.
+//Predefined scales.
 var (
-	Kelvin     = Unit{"Kelvin", `K`}
-	Celsius    = Unit{"Celsius", `C`}
-	Fahrenheit = Unit{"Fahrenheit", `F`}
-	Rankine    = Unit{"Rankine", `R`}
-	Delisle    = Unit{"Delisle", `D`}
-	Reaumur    = Unit{"Reaumur", "Re"}
+	Kelvin     = Scale{"Kelvin", `K`}
+	Celsius    = Scale{"Celsius", `C`}
+	Fahrenheit = Scale{"Fahrenheit", `F`}
+	Rankine    = Scale{"Rankine", `R`}
+	Delisle    = Scale{"Delisle", `D`}
+	Reaumur    = Scale{"Reaumur", "Re"}
 )
 
-//Temperature represent a temperature with a Value and a Unit.
+//Temperature represent a temperature with a Value and a scale.
 type Temperature struct {
 	Value float64
-	Unit  Unit
+	Scale Scale
 }
 
-//NewTemperature allocate a Temperature with a Value and a Unit.
-func NewTemperature(value float64, unit Unit) *Temperature {
-	t := &Temperature{Value: value, Unit: unit}
+//New allocate a Temperature with a Value and a scale.
+func New(value float64, scale Scale) *Temperature {
+	t := &Temperature{Value: value, Scale: scale}
 	return t
 }
 
 func (t *Temperature) String() string {
-	return fmt.Sprintf("%.2f°%s", Round(t.Value, 2), t.Unit.Symbol)
+	return fmt.Sprintf("%.2f°%s", Round(t.Value, 2), t.Scale.Symbol)
 }
 
 //Round returns a round number of a float64.

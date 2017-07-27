@@ -1,8 +1,8 @@
-package converter
+package temperature
 
 // KelvinConverter is the interface that define the Kelvin conversion.
 //
-// Each Converters use by the temperature converter must implement these methods to convert the unit to Kelvin and from Kelvin.
+// Each Converters use by the temperature converter must implement these methods to convert the scale to Kelvin and from Kelvin.
 type KelvinConverter interface {
 	FromKelvin(float64) float64
 	ToKelvin(float64) float64
