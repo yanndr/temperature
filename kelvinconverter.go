@@ -1,35 +1,5 @@
 package temperature
 
-// KelvinConverter is the interface that define the Kelvin conversion.
-//
-// Each Converters use by the temperature converter must implement these methods to convert the scale to Kelvin and from Kelvin.
-type KelvinConverter interface {
-	FromKelvin(float64) float64
-	ToKelvin(float64) float64
-}
-
-type celsiusKelvinConverter struct {
-}
-
-func (*celsiusKelvinConverter) FromKelvin(t float64) float64 {
-	return t - 273.15
-}
-
-func (*celsiusKelvinConverter) ToKelvin(t float64) float64 {
-	return t + 273.15
-}
-
-type fahrenheitKelvinConverter struct {
-}
-
-func (*fahrenheitKelvinConverter) FromKelvin(t float64) float64 {
-	return t*9/5 - 459.67
-}
-
-func (*fahrenheitKelvinConverter) ToKelvin(t float64) float64 {
-	return (t + 459.67) * 5 / 9
-}
-
 type rankineKelvinConverter struct {
 }
 

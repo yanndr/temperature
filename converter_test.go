@@ -1,15 +1,18 @@
-package temperature
+package temperature_test
 
 import (
+	"fmt"
 	"testing"
+
+	"github.com/yanndr/temperature"
 )
 
 func TestConverter(t *testing.T) {
 
 	tt := []struct {
 		name   string
-		input  TemperatureConvertible
-		output TemperatureConvertible
+		input  temperature.ToKelvinConvertible
+		output temperature.FromKelvinConvertible
 		value  float64
 		err    string
 	}{
@@ -27,17 +30,16 @@ func TestConverter(t *testing.T) {
 		// {name: "RtoD 50", temp: temperature.Temperature{Value: 50, Scale: temperature.Rankine}, scale: temperature.Delisle, value: 518.06},
 		// {name: "RtoRe 50", temp: temperature.Temperature{Value: 50, Scale: temperature.Rankine}, scale: temperature.Reaumur, value: -196.3},
 
-		// {name: "FtoC 50", temp: temperature.Temperature{Value: 50, Scale: temperature.Fahrenheit}, scale: temperature.Celsius, value: 10},
-		// {name: "FtoF 50", temp: temperature.Temperature{Value: 50, Scale: temperature.Fahrenheit}, scale: temperature.Fahrenheit, value: 50},
-		// {name: "FtoK 50", temp: temperature.Temperature{Value: 50, Scale: temperature.Fahrenheit}, scale: temperature.Kelvin, value: 283.15},
+		{name: "FtoC 50", input: temperature.NewFahrenheit(50), output: &temperature.Celsius{}, value: 10},
+		{name: "FtoF 50", input: temperature.NewFahrenheit(50), output: &temperature.Fahrenheit{}, value: 50},
+		{name: "FtoK 50", input: temperature.NewFahrenheit(50), output: &temperature.Kelvin{}, value: 283.15},
 		// {name: "FtoR 50", temp: temperature.Temperature{Value: 50, Scale: temperature.Fahrenheit}, scale: temperature.Rankine, value: 509.67},
 		// {name: "FtoD 50", temp: temperature.Temperature{Value: 50, Scale: temperature.Fahrenheit}, scale: temperature.Delisle, value: 135},
 		// {name: "FtoRe 50", temp: temperature.Temperature{Value: 50, Scale: temperature.Fahrenheit}, scale: temperature.Reaumur, value: 8},
 
-		{name: "CtoC 50", input: celsius{Temperature: Temperature{value: 50}}, output: celsius{}, value: 50},
-		{name: "CtoK 50", input: celsius{Temperature: Temperature{value: 50}}, output: kelvin{}, value: 323.15},
-		// {name: "CtoF 50", temp: temperature.Temperature{Value: 50, Scale: temperature.Celsius}, scale: temperature.Fahrenheit, value: 122},
-		// {name: "CtoK 50", temp: temperature.Temperature{Value: 50, Scale: temperature.Celsius}, scale: temperature.Kelvin, value: 323.15},
+		{name: "CtoC 50", input: temperature.NewCelsius(50), output: &temperature.Celsius{}, value: 50},
+		{name: "CtoK 50", input: temperature.NewCelsius(50), output: &temperature.Kelvin{}, value: 323.15},
+		{name: "CtoF 50", input: temperature.NewCelsius(50), output: &temperature.Fahrenheit{}, value: 122},
 		// {name: "CtoR 50", temp: temperature.Temperature{Value: 50, Scale: temperature.Celsius}, scale: temperature.Rankine, value: 581.67},
 		// {name: "CtoD 50", temp: temperature.Temperature{Value: 50, Scale: temperature.Celsius}, scale: temperature.Delisle, value: 75},
 		// {name: "CtoRe 50", temp: temperature.Temperature{Value: 50, Scale: temperature.Celsius}, scale: temperature.Reaumur, value: 40},
@@ -69,11 +71,9 @@ func TestConverter(t *testing.T) {
 		// {name: "No output converter", temp: temperature.Temperature{Value: 0.0, Scale: temperature.Celsius}, scale: temperature.Scale{Name: "Test", Symbol: "T"}, err: "No converter found for Scale Test"},
 	}
 
-	c := Converter{}
-
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			res := c.Convert(tc.input, tc.output)
+			temperature.Convert(tc.input, tc.output)
 
 			// if err != nil {
 			// 	if err.Error() != tc.err {
@@ -81,8 +81,11 @@ func TestConverter(t *testing.T) {
 			// 	}
 			// 	return
 			// }
-
-			val := Round(res.Value(), 2)
+			valuer, ok := tc.output.(temperature.Valuer)
+			if !ok {
+				return
+			}
+			val := temperature.Round(valuer.GetValue(), 2)
 			if val != tc.value {
 
 				t.Fatalf("Expected %v; got %v", tc.value, val)
@@ -95,15 +98,12 @@ func TestConverter(t *testing.T) {
 	}
 }
 
-// func ExampleConverter() {
-// 	c := temperature.NewConverter()
-// 	t := temperature.New(50.0, temperature.Celsius)
+func ExampleConverter() {
+	c := temperature.NewCelsius(30)
+	k := temperature.NewKelvin(0)
 
-// 	r, err := c.Convert(*t, temperature.Fahrenheit)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
+	temperature.Convert(c, &k)
 
-// 	fmt.Println(r)
-// 	//Output: 122°F
-// }
+	fmt.Println(k)
+	//Output: 303.15K
+}

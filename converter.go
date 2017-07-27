@@ -1,33 +1,39 @@
 package temperature
 
-//Converter is the default implementation of a temperature converter.
-type Converter struct {
-	// Converters map[Scale]KelvinConverter
+import "fmt"
+
+func (c Celsius) ToKelvin() Kelvin {
+	return Kelvin{Temperature: Temperature{Value: c.GetValue() + 273.15}}
 }
 
-//NewConverter allocate a new Converter with all the default scales converters.
-// func NewConverter() *Converter {
-// 	tc := &Converter{}
-// 	tc.Converters = make(map[Scale]KelvinConverter)
-// 	tc.Converters[Celsius] = &celsiusKelvinConverter{}
-// 	tc.Converters[Fahrenheit] = &fahrenheitKelvinConverter{}
-// 	tc.Converters[Rankine] = &rankineKelvinConverter{}
-// 	tc.Converters[Delisle] = &delisleKelvinConverter{}
-// 	tc.Converters[Reaumur] = &reaumurKelvinConverter{}
-// 	return tc
-// }
+func (c *Celsius) FromKelvin(v Valuer) {
+	c.Value = v.GetValue() - 273.15
+}
 
-// type noConverterFoundError struct {
-// 	scaleName string
-// }
+func (c Celsius) String() string {
+	return fmt.Sprintf("%v°C", Round(c.Value, 2))
+}
 
-// func (e *noConverterFoundError) Error() string {
-// 	return fmt.Sprintf("No converter found for Scale %s", e.scaleName)
-// }
+func (k Kelvin) ToKelvin() Kelvin {
+	return k
+}
 
-// var errEmptyScale = errors.New("Scale can't be empty")
+func (k *Kelvin) FromKelvin(v Valuer) {
+	k.Value = v.GetValue()
+}
 
-//Convert is the implementation of the convert method for TemperatureConverter.
-func (tc *Converter) Convert(t TemperatureConvertible, u TemperatureConvertible) TemperatureConvertible {
-	return u.FromKelvin(t.ToKelvin())
+func (k Kelvin) String() string {
+	return fmt.Sprintf("%vK", Round(k.Value, 2))
+}
+
+func (f Fahrenheit) ToKelvin() Kelvin {
+	return NewKelvin((f.Value + 459.67) * 5 / 9)
+}
+
+func (f *Fahrenheit) FromKelvin(v Valuer) {
+	f.Value = v.GetValue()*9/5 - 459.67
+}
+
+func (f Fahrenheit) String() string {
+	return fmt.Sprintf("%v°F", Round(f.Value, 2))
 }

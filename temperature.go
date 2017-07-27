@@ -5,73 +5,59 @@ import (
 	"math"
 )
 
-type TemperatureConvertible interface {
-	FromKelvin(TemperatureConvertible) TemperatureConvertible
-	ToKelvin() TemperatureConvertible
-	Value() float64
+type ToKelvinConvertible interface {
+	ToKelvin() Kelvin
+}
+
+type FromKelvinConvertible interface {
+	FromKelvin(Valuer)
+}
+
+type Valuer interface {
+	GetValue() float64
 }
 
 type Temperature struct {
-	value float64
+	Value float64
+}
+
+// GetValue returns the value of the temperature.
+func (t Temperature) GetValue() float64 {
+	return t.Value
 }
 
 type (
-	celsius struct{ Temperature }
-	kelvin  struct{ Temperature }
+	Celsius    struct{ Temperature }
+	Kelvin     struct{ Temperature }
+	Fahrenheit struct{ Temperature }
 )
 
-func (c celsius) ToKelvin() TemperatureConvertible {
-	return kelvin{Temperature: Temperature{value: c.Value() + 273.15}}
-}
-func (c celsius) FromKelvin(v TemperatureConvertible) TemperatureConvertible {
-	return celsius{Temperature: Temperature{value: v.Value() - 273.15}}
-}
-func (t Temperature) Value() float64 {
-	return t.value
+func NewCelsius(value float64) Celsius {
+	return Celsius{
+		Temperature: Temperature{Value: value},
+	}
 }
 
-func (k kelvin) ToKelvin() TemperatureConvertible {
-	return k
-}
-func (k kelvin) FromKelvin(v TemperatureConvertible) TemperatureConvertible {
-	return kelvin{Temperature: Temperature{value: v.Value()}}
-}
-
-//Scale represent a temperature scale.
-type Scale struct {
-	Name   string
-	Symbol string
+func NewKelvin(value float64) Kelvin {
+	return Kelvin{
+		Temperature: Temperature{Value: value},
+	}
 }
 
-// Predefined scales.
-var (
-	Kelvin     = Scale{"Kelvin", `K`}
-	Celsius    = Scale{"Celsius", `C`}
-	Fahrenheit = Scale{"Fahrenheit", `F`}
-	Rankine    = Scale{"Rankine", `R`}
-	Delisle    = Scale{"Delisle", `D`}
-	Reaumur    = Scale{"Reaumur", "Re"}
-)
-
-//Temperature represent a temperature with a Value and a scale.
-// type Temperature struct {
-// Predefined scales.
-// 	Scale Scale
-// }
-
-//New allocate a Temperature with a Value and a scale.
-// func New(value float64, scale Scale) *Temperature {
-// 	t := &Temperature{Value: value, Scale: scale}
-// 	return t
-// }
-
-// func (t *Temperature) String() string {
-// 	return fmt.Sprintf("%v°%s", Round(t.Value, 2), t.Scale.Symbol)
-// }
+func NewFahrenheit(value float64) Fahrenheit {
+	return Fahrenheit{
+		Temperature: Temperature{Value: value},
+	}
+}
 
 //Round returns a round number of a float64.
 func Round(num float64, precision int) float64 {
 	output := math.Pow(10, float64(precision))
 	val := int(num*output + math.Copysign(0.5, num))
 	return float64(val) / output
+}
+
+// Convert a temperature to different unit. It updated the output temperature value.
+func Convert(input ToKelvinConvertible, output FromKelvinConvertible) {
+	output.FromKelvin(input.ToKelvin())
 }
