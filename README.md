@@ -6,7 +6,13 @@ This is Go library for temperature conversion.
 It allow you to convert Kelvin, Celsius, Fahrenheit, Rankine, Reaumur and Delisle unit so far.
 You can use your own unit as long at the unit is implementing the interfaces ToKelvin and FromKelvin and Valuer.
 
-# Usage
+## Installing
+
+```
+go get github.com/yanndr/temperature
+```
+
+## Usage
  
 ```
 c := temperature.NewCelsius(30)
