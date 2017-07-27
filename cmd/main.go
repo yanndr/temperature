@@ -7,26 +7,29 @@ import (
 )
 
 func main() {
-	output := temperature.NewCelsius(0)
+	c := temperature.NewCelsius(0)
 	k := temperature.NewKelvin(366)
-	temperature.Convert(k, &output)
-	n := NewUnit{}
+	n := newUnit{}
 
-	//temperature.Convert(n, &output)
-
-	fmt.Println(output)
-	temperature.Convert(output, &n)
-	fmt.Println(output)
+	temperature.Convert(c, &n)
+	temperature.Convert(c, &k)
+	fmt.Println(c)
+	fmt.Println(k)
+	fmt.Println(n)
 }
 
-type NewUnit struct {
+type newUnit struct {
 	temperature.Temperature
 }
 
-func (n NewUnit) ToKelvin() temperature.Kelvin {
+func (n newUnit) ToKelvin() temperature.Kelvin {
 	return temperature.NewKelvin(n.Value - 5)
 }
 
-func (n *NewUnit) FromKelvin(t temperature.Valuer) {
+func (n *newUnit) FromKelvin(t temperature.Valuer) {
 	n.Value = t.GetValue() + 5
+}
+
+func (n newUnit) String() string {
+	return fmt.Sprintf("%v °Y", temperature.Round(n.Value, 2))
 }
