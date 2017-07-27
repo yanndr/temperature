@@ -35,7 +35,7 @@ func New(value float64, scale Scale) *Temperature {
 }
 
 func (t *Temperature) String() string {
-	return fmt.Sprintf("%.2f°%s", Round(t.Value, 2), t.Scale.Symbol)
+	return fmt.Sprintf("%v°%s", Round(t.Value, 2), t.Scale.Symbol)
 }
 
 //Round returns a round number of a float64.
