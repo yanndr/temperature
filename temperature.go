@@ -24,7 +24,7 @@ func (c celsius) ToKelvin() TemperatureConvertible {
 	return kelvin{Temperature: Temperature{value: c.Value() + 273.15}}
 }
 func (c celsius) FromKelvin(v TemperatureConvertible) TemperatureConvertible {
-	return celsius{Temperature: Temperature{value: c.Value() - 273.15}}
+	return celsius{Temperature: Temperature{value: v.Value() - 273.15}}
 }
 func (t Temperature) Value() float64 {
 	return t.value
