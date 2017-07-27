@@ -23,18 +23,22 @@ If you want to use your a unit that I didn't implemented:
 ```
 func main() {
 	c := temperature.NewCelsius(0)
-	k := temperature.NewKelvin(366)
+	k := temperature.Kelvin{}
+	f := temperature.Fahrenheit{}
 	n := newUnit{}
 
 	temperature.Convert(c, &n)
 	temperature.Convert(c, &k)
+	temperature.Convert(k, &f)
 	fmt.Println(c)
 	fmt.Println(k)
+	fmt.Println(f)
 	fmt.Println(n)
-  //output:
-  //0 °C
-  //273.15 K
-  //278.15 °Y
+	//output:
+	//0 °C
+	//273.15 K
+	//32 °F
+	//278.15 °Y
 }
 
 type newUnit struct {
@@ -47,9 +51,5 @@ func (n newUnit) ToKelvin() temperature.Kelvin {
 
 func (n *newUnit) FromKelvin(t temperature.Valuer) {
 	n.Value = t.GetValue() + 5
-}
-
-func (n newUnit) String() string {
-	return fmt.Sprintf("%v °Y", temperature.Round(n.Value, 2))
 }
 ```
