@@ -20,7 +20,7 @@ f := temperature.Fahrenheit{}
 
 temperature.Convert(c, &f)
 
-fmt.Println(f)t
+fmt.Println(f)
 // output 86 °F
 ```
 
