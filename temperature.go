@@ -62,7 +62,9 @@ var (
 // Temperature is an Temperature interface.
 type Temperature interface {
 	Unit() Unit
+	SetUnit(Unit)
 	Value() float64
+	SetValue(float64)
 	String() string
 	SetTemperature(Temperature)
 }
@@ -86,9 +88,20 @@ func (t *temperature) Unit() Unit {
 	return t.unit
 }
 
+// SetUnit set the unit of the temperature and update the temperature.
+func (t *temperature) SetUnit(u Unit) {
+	t.value = u.FromKelvin(t.Unit().ToKelvin(t.Value()))
+	t.unit = u
+}
+
 // Value returns the value of the temperature.
 func (t *temperature) Value() float64 {
 	return t.value
+}
+
+// SetValue set the value of the temperature.
+func (t *temperature) SetValue(v float64) {
+	t.value = v
 }
 
 // SetTemperature set the temperature value from any other unit temperature.
@@ -140,4 +153,19 @@ func Convert(input Temperature, unit Unit) (Temperature, error) {
 
 	val := unit.FromKelvin(input.Unit().ToKelvin(input.Value()))
 	return &temperature{val, unit}, nil
+}
+
+//Equals returns true if two temperature are equals.
+func Equals(a Temperature, b Temperature) bool {
+	if a == b {
+		return true
+	}
+
+	if a.Unit().Text == b.Unit().Text {
+		return a.Value() == b.Value()
+	}
+
+	ka := a.Unit().ToKelvin(a.Value())
+	kb := b.Unit().ToKelvin(b.Value())
+	return round(ka, 2) == round(kb, 2)
 }
