@@ -132,16 +132,12 @@ func round(num float64, precision int) float64 {
 	return float64(val) / output
 }
 
-// Convert a temperature to different unit. The output must be a pointer as its value will be updated.
-func Convert(input Temperature, output Temperature) error {
-	if output == nil {
-		return ErrNilOutputTemperature
-	}
-
+// Convert a temperature to different unit.
+func Convert(input Temperature, unit Unit) (Temperature, error) {
 	if input == nil {
-		return ErrNilInputTemperature
+		return nil, ErrNilInputTemperature
 	}
 
-	output.SetTemperature(input)
-	return nil
+	val := unit.FromKelvin(input.Unit().ToKelvin(input.Value()))
+	return &temperature{val, unit}, nil
 }

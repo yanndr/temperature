@@ -16,10 +16,9 @@ go get github.com/yanndr/temperature
  
 ```
 c := temperature.NewCelsius(30)
-f := temperature.NewFahrenheit(0)
 
-temperature.Convert(c, f)
-// or f.SetTemperature(c)
+result,_ := temperature.Convert(c, temperature.Fahrenheit)
+
 
 fmt.Println(f)
 // output 86 °F
@@ -36,11 +35,10 @@ var myUnit = temperature.Unit{
 
 func main() {
 	c := temperature.NewCelsius(0)
-	n := temperature.NewTemperature(0, myUnit)
 
-	temperature.Convert(c, n)
+	result,_ := temperature.Convert(c, myUnit)
 	fmt.Println(c)
-	fmt.Println(n)
+	fmt.Println(result)
 }
 
 ```

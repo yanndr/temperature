@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/yanndr/temperature"
 )
@@ -14,13 +15,19 @@ var myUnit = temperature.Unit{
 
 func main() {
 	c := temperature.NewCelsius(0)
-	k := temperature.NewKelvin(0)
-	f := temperature.NewFahrenheit(0)
-	n := temperature.NewTemperature(0, myUnit)
 
-	temperature.Convert(c, n)
-	temperature.Convert(c, k)
-	temperature.Convert(k, f)
+	n, err := temperature.Convert(c, myUnit)
+	if err != nil {
+		log.Fatal(err)
+	}
+	k, err := temperature.Convert(c, temperature.Kelvin)
+	if err != nil {
+		log.Fatal(err)
+	}
+	f, err := temperature.Convert(k, temperature.Fahrenheit)
+	if err != nil {
+		log.Fatal(err)
+	}
 	fmt.Println(c)
 	fmt.Println(k)
 	fmt.Println(f)
