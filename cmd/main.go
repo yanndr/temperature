@@ -6,33 +6,23 @@ import (
 	"github.com/yanndr/temperature"
 )
 
+var myUnit = temperature.Unit{
+	Text:       "Y",
+	FromKelvin: func(v float64) float64 { return v + 710 },
+	ToKelvin:   func(v float64) float64 { return v - 710 },
+}
+
 func main() {
 	c := temperature.NewCelsius(0)
-	k := temperature.Kelvin{}
-	f := temperature.Fahrenheit{}
-	n := newUnit{}
+	k := temperature.NewKelvin(0)
+	f := temperature.NewFahrenheit(0)
+	n := temperature.NewTemperature(0, myUnit)
 
-	temperature.Convert(c, &n)
-	temperature.Convert(c, &k)
-	temperature.Convert(k, &f)
+	temperature.Convert(c, n)
+	temperature.Convert(c, k)
+	temperature.Convert(k, f)
 	fmt.Println(c)
 	fmt.Println(k)
 	fmt.Println(f)
 	fmt.Println(n)
-}
-
-type newUnit struct {
-	temperature.Temperature
-}
-
-func (n newUnit) ToKelvin() temperature.Kelvin {
-	return temperature.NewKelvin(n.Value - 5)
-}
-
-func (n *newUnit) FromKelvin(t temperature.Valuer) {
-	n.Value = t.GetValue() + 5
-}
-
-func (n newUnit) String() string {
-	return fmt.Sprintf("%v °Y", temperature.Round(n.Value, 2))
 }

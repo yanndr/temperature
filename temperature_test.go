@@ -1,9 +1,7 @@
-package temperature_test
+package temperature
 
 import (
 	"testing"
-
-	"github.com/yanndr/temperature"
 )
 
 type stringer interface {
@@ -16,12 +14,12 @@ func TestString(t *testing.T) {
 		temperature stringer
 		result      string
 	}{
-		{name: "Print Celsius", temperature: temperature.NewCelsius(10), result: "10 °C"},
-		{name: "Print Fahrenheit", temperature: temperature.NewFahrenheit(10), result: "10 °F"},
-		{name: "Print Delisle", temperature: temperature.NewDelisle(10), result: "10 °D"},
-		{name: "Print Kelvin", temperature: temperature.NewKelvin(10), result: "10 K"},
-		{name: "Print Reaumur", temperature: temperature.NewReaumur(10), result: "10 °Re"},
-		{name: "Print Rankine", temperature: temperature.NewRankine(10), result: "10 °Ra"},
+		{name: "Print Celsius", temperature: NewCelsius(10), result: "10 °C"},
+		{name: "Print Fahrenheit", temperature: NewFahrenheit(10), result: "10 °F"},
+		{name: "Print Delisle", temperature: NewDelisle(10), result: "10 °D"},
+		{name: "Print Kelvin", temperature: NewKelvin(10), result: "10 K"},
+		{name: "Print Reaumur", temperature: NewReaumur(10), result: "10 °Re"},
+		{name: "Print Rankine", temperature: NewRankine(10), result: "10 °Ra"},
 	}
 
 	for _, tc := range tt {
