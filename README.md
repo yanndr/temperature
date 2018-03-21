@@ -20,7 +20,7 @@ c := temperature.NewCelsius(30)
 result,_ := temperature.Convert(c, temperature.Fahrenheit)
 
 
-fmt.Println(f)
+fmt.Println(result)
 // output 86 °F
 ```
 
