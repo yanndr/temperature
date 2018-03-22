@@ -90,3 +90,38 @@ func Equals(a Temperature, b Temperature) bool {
 	kb := b.Unit().ToKelvin(b.Value())
 	return round(ka, 2) == round(kb, 2)
 }
+
+type handlerTemperatureChanged func(Temperature)
+
+type monitoredTemperature struct {
+	Temperature
+	handler handlerTemperatureChanged
+}
+
+//NewMonitoredTemperature returns a thermometer that send the updated temperature to a channel.
+func NewMonitoredTemperature(unit Unit, handler handlerTemperatureChanged) Temperature {
+	return &monitoredTemperature{
+		Temperature: NewTemperature(0, unit),
+		handler:     handler,
+	}
+}
+
+// SetTemperature set the temperature value from any other unit temperature.
+func (t *monitoredTemperature) SetTemperature(temp Temperature) {
+
+	t.Temperature.SetTemperature(temp)
+
+	if t.handler != nil {
+		t.handler(t)
+	}
+}
+
+// SetValue set the value of the temperature.
+func (t *monitoredTemperature) SetValue(v float64) {
+
+	t.Temperature.SetValue(v)
+
+	if t.handler != nil {
+		t.handler(t)
+	}
+}
