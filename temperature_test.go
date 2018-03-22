@@ -22,6 +22,76 @@ func TestNewTemperature(t *testing.T) {
 	}
 }
 
+func TestNewTemperatureWithHandler(t *testing.T) {
+	val := 10.0
+	changeVal := 15.0
+	unit := Celsius
+	handlerCalled := false
+
+	f := func(temp Temperature) {
+		handlerCalled = true
+
+		if changeVal != temp.Value() {
+			t.Fatalf("Expected %v; got %v", val, temp.Value())
+		}
+
+		if unit.Text != temp.Unit().Text {
+			t.Fatalf("Expected %v; got %v", unit.Text, temp.Unit().Text)
+		}
+	}
+
+	temp := NewTemperatureWithHandler(val, unit, f)
+
+	if val != temp.Value() {
+		t.Fatalf("Expected %v; got %v", val, temp.Value())
+	}
+
+	if unit.Text != temp.Unit().Text {
+		t.Fatalf("Expected %v; got %v", unit.Text, temp.Unit().Text)
+	}
+
+	temp.SetTemperature(NewCelsius(changeVal))
+
+	if !handlerCalled {
+		t.Fatalf("Handler not called Expected %v; got %v", true, handlerCalled)
+	}
+}
+
+func TestSetTemperateChangeHandler(t *testing.T) {
+	val := 10.0
+	changeVal := 15.0
+	unit := Celsius
+	handlerCalled := false
+
+	f := func(temp Temperature) {
+		handlerCalled = true
+
+		if changeVal != temp.Value() {
+			t.Fatalf("Expected %v; got %v", val, temp.Value())
+		}
+
+		if unit.Text != temp.Unit().Text {
+			t.Fatalf("Expected %v; got %v", unit.Text, temp.Unit().Text)
+		}
+	}
+
+	temp := NewTemperature(val, unit)
+
+	if val != temp.Value() {
+		t.Fatalf("Expected %v; got %v", val, temp.Value())
+	}
+
+	if unit.Text != temp.Unit().Text {
+		t.Fatalf("Expected %v; got %v", unit.Text, temp.Unit().Text)
+	}
+
+	temp.SetTemperateChangeHandler(f)
+	temp.SetTemperature(NewCelsius(changeVal))
+
+	if !handlerCalled {
+		t.Fatalf("Handler not called Expected %v; got %v", true, handlerCalled)
+	}
+}
 func TestString(t *testing.T) {
 	tt := []struct {
 		name        string

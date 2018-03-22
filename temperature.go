@@ -18,16 +18,25 @@ type Temperature interface {
 	SetValue(float64)
 	String() string
 	SetTemperature(Temperature)
+	SetTemperateChangeHandler(temperatureChangeHandler)
 }
 
+type temperatureChangeHandler func(Temperature)
+
 type temperature struct {
-	value float64
-	unit  Unit
+	value   float64
+	unit    Unit
+	handler temperatureChangeHandler
 }
 
 //NewTemperature returns a temperature.
-func NewTemperature(value float64, unit Unit) Temperature {
-	return &temperature{value, unit}
+func NewTemperature(v float64, u Unit) Temperature {
+	return &temperature{v, u, nil}
+}
+
+//NewTemperatureWithHandler returns a temperature with a handler function when temperature change.
+func NewTemperatureWithHandler(v float64, u Unit, h temperatureChangeHandler) Temperature {
+	return &temperature{v, u, h}
 }
 
 func (t *temperature) String() string {
@@ -53,11 +62,21 @@ func (t *temperature) Value() float64 {
 // SetValue set the value of the temperature.
 func (t *temperature) SetValue(v float64) {
 	t.value = v
+
+	if t.handler != nil {
+		t.handler(t)
+	}
 }
 
 // SetTemperature set the temperature value from any other unit temperature.
 func (t *temperature) SetTemperature(temp Temperature) {
-	t.value = t.unit.FromKelvin(temp.Unit().ToKelvin(temp.Value()))
+	val := t.unit.FromKelvin(temp.Unit().ToKelvin(temp.Value()))
+	t.SetValue(val)
+}
+
+// SetTemperateChangeHandler is a setter for the temperature change handler.
+func (t *temperature) SetTemperateChangeHandler(h temperatureChangeHandler) {
+	t.handler = h
 }
 
 func round(num float64, precision int) float64 {
@@ -73,7 +92,7 @@ func Convert(input Temperature, unit Unit) (Temperature, error) {
 	}
 
 	val := unit.FromKelvin(input.Unit().ToKelvin(input.Value()))
-	return &temperature{val, unit}, nil
+	return &temperature{value: val, unit: unit}, nil
 }
 
 //Equals returns true if two temperature are equals.
@@ -89,39 +108,4 @@ func Equals(a Temperature, b Temperature) bool {
 	ka := a.Unit().ToKelvin(a.Value())
 	kb := b.Unit().ToKelvin(b.Value())
 	return round(ka, 2) == round(kb, 2)
-}
-
-type handlerTemperatureChanged func(Temperature)
-
-type monitoredTemperature struct {
-	Temperature
-	handler handlerTemperatureChanged
-}
-
-//NewMonitoredTemperature returns a thermometer that send the updated temperature to a channel.
-func NewMonitoredTemperature(unit Unit, handler handlerTemperatureChanged) Temperature {
-	return &monitoredTemperature{
-		Temperature: NewTemperature(0, unit),
-		handler:     handler,
-	}
-}
-
-// SetTemperature set the temperature value from any other unit temperature.
-func (t *monitoredTemperature) SetTemperature(temp Temperature) {
-
-	t.Temperature.SetTemperature(temp)
-
-	if t.handler != nil {
-		t.handler(t)
-	}
-}
-
-// SetValue set the value of the temperature.
-func (t *monitoredTemperature) SetValue(v float64) {
-
-	t.Temperature.SetValue(v)
-
-	if t.handler != nil {
-		t.handler(t)
-	}
 }
