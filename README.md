@@ -15,7 +15,7 @@ go get github.com/yanndr/temperature
 ## Usage
  
 ```
-c := temperature.NewCelsius(30)
+c := temperature.New(30,Celsius)
 
 result,_ := temperature.Convert(c, temperature.Fahrenheit)
 
@@ -27,14 +27,20 @@ fmt.Println(result)
 If you want to use your a unit that I didn't implemented:
 
 ```
-var myUnit = temperature.Unit{
-	Text:       "°Y",
-	FromKelvin: func(v float64) float64 { return v + 710 },
-	ToKelvin:   func(v float64) float64 { return v - 710 },
+type newUnit temperature.Unit
+
+const myUnit = newUnit("Y")
+
+func (newUnit) ToKelvin(v float64) float64 {
+	return v + 710
+}
+
+func (newUnit) FromKelvin(v float64) temperature.Temperature {
+	return temperature.New(v-710, myUnit)
 }
 
 func main() {
-	c := temperature.NewCelsius(0)
+	c := temperature.New(0,temperature.Celsius)
 
 	result,_ := temperature.Convert(c, myUnit)
 	fmt.Println(c)

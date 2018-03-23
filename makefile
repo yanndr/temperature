@@ -4,5 +4,5 @@ all:
 test: 
 	go test -race ./...
 
-run:
-	go run ./cmd/main.go
+run-example:
+	go run ./example/main.go
