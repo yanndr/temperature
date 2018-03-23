@@ -12,6 +12,7 @@ var ErrNilArgument = errors.New("argument can't be nil")
 
 type temperatureChangeHandler func(Temperature)
 
+//Stringer provides String method.
 type Stringer interface {
 	String() string
 }
@@ -34,10 +35,12 @@ type temperature struct {
 	handler temperatureChangeHandler
 }
 
+//New returns a new Temperature.
 func New(v float64, unit Convertible) Temperature {
 	return &temperature{v: v, unit: unit}
 }
 
+//NewWithHandler returns a new temperature with a handler to handle temperature changes.
 func NewWithHandler(v float64, unit Convertible, handler temperatureChangeHandler) Temperature {
 	return &temperature{v: v, unit: unit, handler: handler}
 }
