@@ -18,17 +18,17 @@ type (
 )
 
 const (
-	//Celsius teperature unit
+	//Celsius temperature unit
 	Celsius = celsius("°C")
-	//Kelvin teperature unit
+	//Kelvin temperature unit
 	Kelvin = kelvin("K")
-	//Fahrenheit teperature unit
+	//Fahrenheit temperature unit
 	Fahrenheit = fahrenheit("°F")
-	//Rankine teperature unit
+	//Rankine temperature unit
 	Rankine = rankine("°Ra")
-	//Delisle teperature unit
+	//Delisle temperature unit
 	Delisle = delisle("°D")
-	//Reaumur teperature unit
+	//Reaumur temperature unit
 	Reaumur = reaumur("°Re")
 )
 
