@@ -7,70 +7,72 @@ import (
 	"math"
 )
 
-// ErrNilInputTemperature is an error when the input temperature is nil.
-var ErrNilInputTemperature = errors.New("Input temperature can't be nil")
+// ErrNilArgument is an error when the argument is nil.
+var ErrNilArgument = errors.New("argument can't be nil")
 
-// Temperature is an Temperature interface.
+type temperatureChangeHandler func(Temperature)
+
+type Stringer interface {
+	String() string
+}
+
+// Temperature provides all the function needed for a temperature.
 type Temperature interface {
-	Unit() Unit
-	SetUnit(Unit)
+	Stringer
 	Value() float64
 	SetValue(float64)
-	String() string
+	Unit() Convertible
+	SetUnit(Convertible)
+
 	SetTemperature(Temperature)
 	SetTemperateChangeHandler(temperatureChangeHandler)
 }
 
-type temperatureChangeHandler func(Temperature)
-
 type temperature struct {
-	value   float64
-	unit    Unit
+	v       float64
+	unit    Convertible
 	handler temperatureChangeHandler
 }
 
-//NewTemperature returns a temperature.
-func NewTemperature(v float64, u Unit) Temperature {
-	return &temperature{v, u, nil}
+func New(v float64, unit Convertible) Temperature {
+	return &temperature{v: v, unit: unit}
 }
 
-//NewTemperatureWithHandler returns a temperature with a handler function when temperature change.
-func NewTemperatureWithHandler(v float64, u Unit, h temperatureChangeHandler) Temperature {
-	return &temperature{v, u, h}
+func NewWithHandler(v float64, unit Convertible, handler temperatureChangeHandler) Temperature {
+	return &temperature{v: v, unit: unit, handler: handler}
 }
 
-func (t *temperature) String() string {
-	return fmt.Sprintf("%v %s", round(t.Value(), 2), t.unit.Text)
-}
-
-// Unit retruns the unit of the temperature.
-func (t *temperature) Unit() Unit {
-	return t.unit
-}
-
-// SetUnit set the unit of the temperature and update the temperature.
-func (t *temperature) SetUnit(u Unit) {
-	t.value = u.FromKelvin(t.Unit().ToKelvin(t.Value()))
-	t.unit = u
+func (t temperature) String() string {
+	return fmt.Sprintf("%v %s", round(float64(t.v), 2), t.unit)
 }
 
 // Value returns the value of the temperature.
-func (t *temperature) Value() float64 {
-	return t.value
+func (t temperature) Value() float64 {
+	return t.v
 }
 
-// SetValue set the value of the temperature.
+// // SetValue set the value of the temperature.
 func (t *temperature) SetValue(v float64) {
-	t.value = v
+	t.v = v
 
 	if t.handler != nil {
 		t.handler(t)
 	}
 }
 
+func (t temperature) Unit() Convertible {
+	return t.unit
+}
+
+// SetUnit set the unit of the temperature and update the temperature.
+func (t *temperature) SetUnit(u Convertible) {
+	t.v = u.FromKelvin(t.unit.ToKelvin(t.v)).Value()
+	t.unit = u
+}
+
 // SetTemperature set the temperature value from any other unit temperature.
 func (t *temperature) SetTemperature(temp Temperature) {
-	val := t.unit.FromKelvin(temp.Unit().ToKelvin(temp.Value()))
+	val := t.unit.FromKelvin(temp.Unit().ToKelvin(temp.Value())).Value()
 	t.SetValue(val)
 }
 
@@ -86,13 +88,12 @@ func round(num float64, precision int) float64 {
 }
 
 // Convert a temperature to different unit.
-func Convert(input Temperature, unit Unit) (Temperature, error) {
-	if input == nil {
-		return nil, ErrNilInputTemperature
+func Convert(input Temperature, output Convertible) (Temperature, error) {
+	if input == nil || output == nil {
+		return nil, ErrNilArgument
 	}
 
-	val := unit.FromKelvin(input.Unit().ToKelvin(input.Value()))
-	return &temperature{value: val, unit: unit}, nil
+	return output.FromKelvin(input.Unit().ToKelvin(input.Value())), nil
 }
 
 //Equals returns true if two temperature are equals.
@@ -101,7 +102,7 @@ func Equals(a Temperature, b Temperature) bool {
 		return true
 	}
 
-	if a.Unit().Text == b.Unit().Text {
+	if a.Unit() == b.Unit() {
 		return a.Value() == b.Value()
 	}
 

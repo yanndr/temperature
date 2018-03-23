@@ -4,25 +4,21 @@ import (
 	"testing"
 )
 
-type stringer interface {
-	String() string
-}
-
-func TestNewTemperature(t *testing.T) {
+func TestNew(t *testing.T) {
 	val := 10.0
 	unit := Celsius
-	temp := NewTemperature(val, unit)
+	temp := New(val, unit)
 
 	if val != temp.Value() {
 		t.Fatalf("Expected %v; got %v", val, temp.Value())
 	}
 
-	if unit.Text != temp.Unit().Text {
-		t.Fatalf("Expected %v; got %v", unit.Text, temp.Unit().Text)
+	if unit != temp.Unit() {
+		t.Fatalf("Expected %v; got %v", unit, temp.Unit())
 	}
 }
 
-func TestNewTemperatureWithHandler(t *testing.T) {
+func TestNewWithHandler(t *testing.T) {
 	val := 10.0
 	changeVal := 15.0
 	unit := Celsius
@@ -35,22 +31,22 @@ func TestNewTemperatureWithHandler(t *testing.T) {
 			t.Fatalf("Expected %v; got %v", val, temp.Value())
 		}
 
-		if unit.Text != temp.Unit().Text {
-			t.Fatalf("Expected %v; got %v", unit.Text, temp.Unit().Text)
+		if unit != temp.Unit() {
+			t.Fatalf("Expected %v; got %v", unit, temp.Unit())
 		}
 	}
 
-	temp := NewTemperatureWithHandler(val, unit, f)
+	temp := NewWithHandler(val, unit, f)
 
 	if val != temp.Value() {
 		t.Fatalf("Expected %v; got %v", val, temp.Value())
 	}
 
-	if unit.Text != temp.Unit().Text {
-		t.Fatalf("Expected %v; got %v", unit.Text, temp.Unit().Text)
+	if unit != temp.Unit() {
+		t.Fatalf("Expected %v; got %v", unit, temp.Unit())
 	}
 
-	temp.SetTemperature(NewCelsius(changeVal))
+	temp.SetTemperature(New(changeVal, Celsius))
 
 	if !handlerCalled {
 		t.Fatalf("Handler not called Expected %v; got %v", true, handlerCalled)
@@ -70,23 +66,23 @@ func TestSetTemperateChangeHandler(t *testing.T) {
 			t.Fatalf("Expected %v; got %v", val, temp.Value())
 		}
 
-		if unit.Text != temp.Unit().Text {
-			t.Fatalf("Expected %v; got %v", unit.Text, temp.Unit().Text)
+		if unit != temp.Unit() {
+			t.Fatalf("Expected %v; got %v", unit, temp.Unit())
 		}
 	}
 
-	temp := NewTemperature(val, unit)
+	temp := New(val, unit)
 
 	if val != temp.Value() {
 		t.Fatalf("Expected %v; got %v", val, temp.Value())
 	}
 
-	if unit.Text != temp.Unit().Text {
-		t.Fatalf("Expected %v; got %v", unit.Text, temp.Unit().Text)
+	if unit != temp.Unit() {
+		t.Fatalf("Expected %v; got %v", unit, temp.Unit())
 	}
 
 	temp.SetTemperateChangeHandler(f)
-	temp.SetTemperature(NewCelsius(changeVal))
+	temp.SetTemperature(New(changeVal, Celsius))
 
 	if !handlerCalled {
 		t.Fatalf("Handler not called Expected %v; got %v", true, handlerCalled)
@@ -95,15 +91,15 @@ func TestSetTemperateChangeHandler(t *testing.T) {
 func TestString(t *testing.T) {
 	tt := []struct {
 		name        string
-		temperature stringer
+		temperature Stringer
 		result      string
 	}{
-		{name: "Print Celsius", temperature: NewCelsius(10), result: "10 °C"},
-		{name: "Print Fahrenheit", temperature: NewFahrenheit(10), result: "10 °F"},
-		{name: "Print Delisle", temperature: NewDelisle(10), result: "10 °D"},
-		{name: "Print Kelvin", temperature: NewKelvin(10), result: "10 K"},
-		{name: "Print Reaumur", temperature: NewReaumur(10), result: "10 °Re"},
-		{name: "Print Rankine", temperature: NewRankine(10), result: "10 °Ra"},
+		{name: "Print Celsius", temperature: New(10, Celsius), result: "10 °C"},
+		{name: "Print Fahrenheit", temperature: New(10, Fahrenheit), result: "10 °F"},
+		{name: "Print Delisle", temperature: New(10, Delisle), result: "10 °D"},
+		{name: "Print Kelvin", temperature: New(10, Kelvin), result: "10 K"},
+		{name: "Print Reaumur", temperature: New(10, Reaumur), result: "10 °Re"},
+		{name: "Print Rankine", temperature: New(10, Rankine), result: "10 °Ra"},
 	}
 
 	for _, tc := range tt {
@@ -117,7 +113,7 @@ func TestString(t *testing.T) {
 }
 
 func TestEquals(t *testing.T) {
-	temp := NewCelsius(45)
+	temp := New(45, Celsius)
 	tt := []struct {
 		name   string
 		a      Temperature
@@ -125,10 +121,10 @@ func TestEquals(t *testing.T) {
 		result bool
 	}{
 		{name: "Same object", a: temp, b: temp, result: true},
-		{name: "Equal same unit", a: NewCelsius(10), b: NewCelsius(10), result: true},
-		{name: "Not Equal same unit", a: NewCelsius(10), b: NewCelsius(9), result: false},
-		{name: "Not Equal different unit", a: NewCelsius(10), b: NewFahrenheit(9), result: false},
-		{name: "Equal different unit", a: NewCelsius(0), b: NewFahrenheit(32), result: true},
+		{name: "Equal same unit", a: New(10, Celsius), b: New(10, Celsius), result: true},
+		{name: "Not Equal same unit", a: New(10, Celsius), b: New(9, Celsius), result: false},
+		{name: "Not Equal different unit", a: New(10, Celsius), b: New(9, Kelvin), result: false},
+		{name: "Equal different unit", a: New(0, Celsius), b: New(273.15, Kelvin), result: true},
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
@@ -141,7 +137,7 @@ func TestEquals(t *testing.T) {
 }
 
 func TestSetValue(t *testing.T) {
-	temp := NewCelsius(10)
+	temp := New(10, Celsius)
 	temp.SetValue(5)
 
 	if temp.Value() != 5 {
@@ -150,11 +146,11 @@ func TestSetValue(t *testing.T) {
 }
 
 func TestSetUnit(t *testing.T) {
-	temp := NewCelsius(0)
+	temp := New(0, Celsius)
 	temp.SetUnit(Fahrenheit)
 
-	if temp.Unit().Text != Fahrenheit.Text {
-		t.Fatalf("Expected %v; got %v", Fahrenheit.Text, temp.Unit())
+	if temp.Unit() != Fahrenheit {
+		t.Fatalf("Expected %v; got %v", Fahrenheit, temp.Unit())
 	}
 
 	if round(temp.Value(), 2) != 32 {

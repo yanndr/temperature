@@ -7,14 +7,20 @@ import (
 	"github.com/yanndr/temperature"
 )
 
-var myUnit = temperature.Unit{
-	Text:       "Y",
-	FromKelvin: func(v float64) float64 { return v + 710 },
-	ToKelvin:   func(v float64) float64 { return v - 710 },
+type newUnit temperature.Unit
+
+const myUnit = newUnit("Y")
+
+func (newUnit) ToKelvin(v float64) float64 {
+	return v + 710
+}
+
+func (newUnit) FromKelvin(v float64) temperature.Temperature {
+	return temperature.New(v-710, myUnit)
 }
 
 func main() {
-	c := temperature.NewCelsius(0)
+	c := temperature.New(0, temperature.Celsius)
 
 	n, err := temperature.Convert(c, myUnit)
 	if err != nil {
