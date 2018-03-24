@@ -55,7 +55,7 @@ func (t temperature) Value() float64 {
 }
 
 // // SetValue set the value of the temperature.
-func (t temperature) SetValue(v float64) {
+func (t *temperature) SetValue(v float64) {
 	t.v = v
 
 	if t.handler != nil {
@@ -68,19 +68,19 @@ func (t temperature) Unit() Convertible {
 }
 
 // SetUnit set the unit of the temperature and update the temperature.
-func (t temperature) SetUnit(u Convertible) {
+func (t *temperature) SetUnit(u Convertible) {
 	t.v = u.FromKelvin(t.unit.ToKelvin(t.v)).Value()
 	t.unit = u
 }
 
 // SetTemperature set the temperature value from any other unit temperature.
-func (t temperature) SetTemperature(temp Temperature) {
+func (t *temperature) SetTemperature(temp Temperature) {
 	val := t.unit.FromKelvin(temp.Unit().ToKelvin(temp.Value())).Value()
 	t.SetValue(val)
 }
 
 // SetTemperateChangeHandler is a setter for the temperature change handler.
-func (t temperature) SetTemperateChangeHandler(h temperatureChangeHandler) {
+func (t *temperature) SetTemperateChangeHandler(h temperatureChangeHandler) {
 	t.handler = h
 }
 
