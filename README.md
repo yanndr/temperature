@@ -3,8 +3,8 @@
 [![GoDoc](https://godoc.org/github.com/yanndr/temperature?status.svg)](https://godoc.org/github.com/yanndr/temperature)
 
 This is Go library for temperature conversion.
-It allow you to convert Kelvin, Celsius, Fahrenheit, Rankine, Reaumur and Delisle unit so far.
-You can use your own unit as long at the unit is implementing the interfaces ToKelvin and FromKelvin and Valuer.
+So far, it allows you to convert Kelvin, Celsius, Fahrenheit, Rankine, Reaumur and Delisle unit.
+You can also use your own unit as long at the unit is implementing the interfaces ToKelvin and FromKelvin.
 
 ## Installing
 
@@ -24,7 +24,7 @@ fmt.Println(result)
 // output 86 °F
 ```
 
-If you want to use your a unit that I didn't implemented:
+If you want to use a unit that I didn't implement:
 
 ```
 type newUnit temperature.Unit
